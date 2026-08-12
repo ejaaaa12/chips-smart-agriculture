@@ -31,8 +31,8 @@ const NAMA_BULAN = [
   "Jul", "Agu", "Sep", "Okt", "Nov", "Des",
 ];
 
-// 🟢 IP Tailscale Raspberry Pi Backend
-const RASPI_IP = "http://100.97.117.87:8000";
+// 🟢 Menggunakan Environment Variable Ngrok dengan Fallback IP Lokal
+const RASPI_URL = process.env.NEXT_PUBLIC_RASPI_URL || "http://100.97.117.87:8000";
 
 export default function PetaniDashboard() {
   const [komoditas, setKomoditas] = useState<Komoditas>(DAFTAR_KOMODITAS[0]);
@@ -69,7 +69,12 @@ export default function PetaniDashboard() {
     setLoading(true);
     const komoditasSlug = komoditas.id.toLowerCase().replace("_", "-");
 
-    fetch(`${RASPI_IP}/predict?days=365&komoditas=${komoditasSlug}`)
+    // 🟢 Memanggil API Ngrok + Header Bypass Warning
+    fetch(`${RASPI_URL}/predict?days=365&komoditas=${komoditasSlug}`, {
+      headers: {
+        "ngrok-skip-browser-warning": "true",
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! Status: ${res.status}`);
@@ -129,9 +134,12 @@ export default function PetaniDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#f4f6f5]">
-      <Sidebar role="petani" />
+      {/* 🟢 Sidebar hanya muncul di layar desktop (lg ke atas) agar rapi di HP */}
+      <div className="hidden lg:block">
+        <Sidebar role="petani" />
+      </div>
 
-      <main className="flex-1 p-6 lg:p-8 min-w-0">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
         <Topbar
           emoji="🌱"
           title="Dashboard Petani"
@@ -139,7 +147,7 @@ export default function PetaniDashboard() {
           description={`Kelola lahan, panen dan pantau prediksi harga ${komoditas.nama.toLowerCase()}.`}
           dateLabel="17 Juli 2026"
           rightSlot={
-            <div className="w-48">
+            <div className="w-full sm:w-48 mt-2 sm:mt-0">
               <KomoditasSelector selected={komoditas} onSelect={setKomoditas} />
             </div>
           }

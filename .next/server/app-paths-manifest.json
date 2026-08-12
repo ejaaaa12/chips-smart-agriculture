@@ -1,0 +1,7 @@
+{
+  "/petani/page": "app/petani/page.js",
+  "/admin/pengaturan/page": "app/admin/pengaturan/page.js",
+  "/petani/pendataan-panen/page": "app/petani/pendataan-panen/page.js",
+  "/petani/ai-kamera/page": "app/petani/ai-kamera/page.js",
+  "/klasifikasi/page": "app/klasifikasi/page.js"
+}

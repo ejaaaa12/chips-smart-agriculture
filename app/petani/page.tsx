@@ -134,12 +134,11 @@ export default function PetaniDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#f4f6f5]">
-      {/* 🟢 Sidebar hanya muncul di layar desktop (lg ke atas) agar rapi di HP */}
-      <div className="hidden lg:block">
-        <Sidebar role="petani" />
-      </div>
+      {/* 🟢 Render Sidebar langsung tanpa pembungkus hidden lg:block */}
+      <Sidebar role="petani" />
 
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0">
+      {/* 🟢 Tambahkan pt-16 pada mobile agar tidak tertutup topbar fixed */}
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 pt-16 lg:pt-8">
         <Topbar
           emoji="🌱"
           title="Dashboard Petani"

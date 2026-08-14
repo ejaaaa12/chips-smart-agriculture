@@ -31,18 +31,31 @@ const NAMA_BULAN = [
   "Jul", "Agu", "Sep", "Okt", "Nov", "Des",
 ];
 
-// 🟢 Menggunakan Environment Variable Ngrok dengan Fallback IP Lokal
+// 🟢 Environment Variable Ngrok dengan Fallback IP Lokal
 const RASPI_URL = process.env.NEXT_PUBLIC_RASPI_URL || "http://100.97.117.87:8000";
 
 export default function PetaniDashboard() {
   const [komoditas, setKomoditas] = useState<Komoditas>(DAFTAR_KOMODITAS[0]);
   const [data, setData] = useState<Prediction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [tanggalRealtime, setTanggalRealtime] = useState<string>("");
 
   const [listRiwayat, setListRiwayat] = useState<RiwayatPanen[]>([
     { tanggal: "15 Juli 2026", jenis: "Cabai Merah", jumlah: "300 Kg", luas: "0.6 Ha", lokasi: "Kabupaten Cirebon" },
     { tanggal: "10 April 2026", jenis: "Cabai Merah", jumlah: "250 Kg", luas: "0.5 Ha", lokasi: "Kabupaten Cirebon" },
   ]);
+
+  // 🟢 Effect Tanggal Real-Time (Perbaikan: "long" huruf kecil)
+  useEffect(() => {
+    const hariIni = new Date();
+    setTanggalRealtime(
+      hariIni.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    );
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -134,17 +147,15 @@ export default function PetaniDashboard() {
 
   return (
     <div className="flex min-h-screen bg-[#f4f6f5]">
-      {/* 🟢 Render Sidebar langsung tanpa pembungkus hidden lg:block */}
       <Sidebar role="petani" />
 
-      {/* 🟢 Tambahkan pt-16 pada mobile agar tidak tertutup topbar fixed */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 pt-16 lg:pt-8">
         <Topbar
           emoji="🌱"
           title="Dashboard Petani"
-          subtitle="Selamat datang, Pak Budi!"
+          subtitle="Halo, Pak Petani!"
           description={`Kelola lahan, panen dan pantau prediksi harga ${komoditas.nama.toLowerCase()}.`}
-          dateLabel="17 Juli 2026"
+          dateLabel={tanggalRealtime || "Memuat..."}
           rightSlot={
             <div className="w-full sm:w-48 mt-2 sm:mt-0">
               <KomoditasSelector selected={komoditas} onSelect={setKomoditas} />

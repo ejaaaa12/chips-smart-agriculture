@@ -12,8 +12,8 @@ import {
     ShieldCheck,
 } from "lucide-react";
 
-// 🟢 IP Tailscale Raspberry Pi Backend
-const RASPI_IP = "http://100.97.117.87:8000";
+// 🟢 PERBAIKAN 1: Gunakan URL HTTPS Ngrok
+const RASPI_IP = "https://reverence-faucet-antennae.ngrok-free.dev";
 
 interface ClassificationResult {
     status: string;
@@ -24,9 +24,6 @@ interface ClassificationResult {
 
 // =========================================================
 // 🔖 DATA REKOMENDASI PENANGANAN & PENCEGAHAN PER KELAS
-// Tambahkan / ubah entri di sini kalau ada kelas baru dari model AI.
-// Key HARUS lowercase & tanpa spasi (pakai underscore), disamakan
-// dengan class_name yang dikirim backend.
 // =========================================================
 interface Recommendation {
     label: string;
@@ -68,7 +65,6 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     },
 };
 
-// Fallback kalau class_name belum ada di daftar rekomendasi di atas
 const DEFAULT_RECOMMENDATION: Recommendation = {
     label: "Hasil Tidak Dikenali",
     deskripsi:
@@ -125,8 +121,12 @@ export default function KlasifikasiPage() {
         formData.append("file", selectedImage);
 
         try {
+            // 🟢 PERBAIKAN 2: Tambahkan headers untuk me-bypass warning Ngrok
             const response = await fetch(`${RASPI_IP}/classify`, {
                 method: "POST",
+                headers: {
+                    "ngrok-skip-browser-warning": "69420",
+                },
                 body: formData,
             });
 
